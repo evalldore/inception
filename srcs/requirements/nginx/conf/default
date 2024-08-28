@@ -1,11 +1,5 @@
-events {
-
-}
-
-http {
-	server {
-		listen 443;
-		index index.html;
-		root /var/www/html;
-	}
+server {
+	listen 443;
+	index index.html;
+	root /var/www/html;
 }
