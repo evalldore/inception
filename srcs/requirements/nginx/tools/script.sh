@@ -1,5 +1,5 @@
 #!/bin/bash
 
-echo "xddd"
+echo "Launching nginx!"
 
 nginx -g "daemon off;"

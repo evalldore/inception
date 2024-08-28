@@ -1,5 +1,3 @@
-#it has to build the Docker images using docker-compose.yml
-
 COMPOSE			:= ./srcs/docker-compose.yml
 
 all : up
@@ -9,6 +7,8 @@ up :
 
 down :
 	@docker-compose -f $(COMPOSE) down
+	@docker rmi nginx:42
+	@docker rmi wordpress:42
 
 stop :
 	@docker-compose -f $(COMPOSE) stop
