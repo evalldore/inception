@@ -1,29 +1,62 @@
 version: "3.5"
 
-services:
-  db:
-    image: mysql:5.7
-    volumes:
-      - db_data:/var/lib/mysql
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: pass123
-      MYSQL_DATABASE: wordpress
-      MYSQL_USER: wordpress
-      MYSQL_PASSWORD: wordpress
-  
-  wordpress:
-    depends_on:
-      - db
-    image: wordpress:latest
-    ports:
-      - 8000:80
-    restart: always
-    environment:
-      WORDPRESS_DB_HOST: db:3306
-      WORDPRESS_DB_USER: wordpress
-      WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: wordpress
-
 volumes:
-  db_data: {}
+	wordpress:
+		name: wordpress
+		driver: local
+		driver_opts:
+			device: /home/inception/data/wordpress
+			o: bind
+			type: none
+	mariadb:
+		name: mariadb
+		driver: local
+		driver_opts:
+			device: /home/inception/data/mariadb
+			o: bind
+			type: none
+
+networks:
+	inception:
+		name: inception
+
+services:
+	nginx:
+		container_name: nginx
+		build: ./requirements/nginx/
+		image: nginx:42
+		ports:
+			- "443:443"
+		depends_on:
+			- wordpress
+		volumes:
+			- wordpress:/var/www/html
+		networks:
+			- inception
+		env_file:
+			- .env
+		restart: always
+	wordpress:
+		container_name: wordpress
+		build: ./requirements/wordpress/
+		image: wordpress:42
+		depends_on:
+			- mariadb
+		volumes:
+			- wordpress:/var/www/html
+		env_file:
+			- .env
+		networks:
+			- inception
+		restart: always
+	mariadb:
+		container_name: mariadb
+		build: ./requirements/mariadb/
+		image: mariadb:42
+		volumes:
+			- mariadb:/var/lib/mysql
+		env_file:
+			- .env
+		networks:
+			- inception
+		restart: always
