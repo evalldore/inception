@@ -1,14 +1,28 @@
+#https://medium.com/@ssterdev/inception-guide-42-project-part-i-7e3af15eb671
+
 COMPOSE			:= ./srcs/docker-compose.yml
+DATADIR			:= data/
+IMAGES			:= nginx:42 wordpress:42 mariadb:42
 
 all : up
 
-up :
+up : $(DATADIR)
 	@docker-compose -f $(COMPOSE) up -d
+
+$(DATADIR) :
+	@echo Creating Database.
+	@mkdir $(DATADIR)
+	@mkdir $(DATADIR)/wordpress
+	@mkdir $(DATADIR)/mariadb
+
+clean :
+	@echo Cleaning Database.
+	@rm -r $(DATADIR)
+	@echo Cleaning docker images.
+	@docker rmi $(IMAGES)
 
 down :
 	@docker-compose -f $(COMPOSE) down
-	@docker rmi nginx:42
-	@docker rmi wordpress:42
 
 stop :
 	@docker-compose -f $(COMPOSE) stop
