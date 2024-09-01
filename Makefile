@@ -1,8 +1,10 @@
 #https://medium.com/@ssterdev/inception-guide-42-project-part-i-7e3af15eb671
+#https://docs.docker.com/compose/use-secrets/
 
 COMPOSE			:= ./srcs/docker-compose.yml
 DATADIR			:= data/
 IMAGES			:= nginx:42 wordpress:42 mariadb:42
+VOLUMES			:= mariadb wordpress
 
 all : up
 
@@ -17,9 +19,12 @@ $(DATADIR) :
 
 clean :
 	@echo Cleaning Database.
+	@chown -R $(USER) data
 	@rm -r $(DATADIR)
 	@echo Cleaning docker images.
 	@docker rmi $(IMAGES)
+	@echo Cleaning volumes.
+	@docker volume rm $(VOLUMES)
 
 down :
 	@docker-compose -f $(COMPOSE) down

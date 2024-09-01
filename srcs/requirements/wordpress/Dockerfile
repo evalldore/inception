@@ -8,4 +8,6 @@ RUN apt install curl -y
 COPY conf/www.conf /etc/php/8.2/fpm/pool.d/
 COPY ./tools/script.sh /
 
+RUN chmod +x script.sh
+
 CMD [ "/script.sh" ]
