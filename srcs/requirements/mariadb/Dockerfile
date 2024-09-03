@@ -1,4 +1,4 @@
-FROM debian:latest
+FROM debian:bullseye
 
 RUN apt -y update 
 RUN apt install mariadb-server -y

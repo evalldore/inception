@@ -2,7 +2,7 @@
 #https://docs.docker.com/compose/use-secrets/
 
 COMPOSE			:= ./srcs/docker-compose.yml
-DATADIR			:= data/
+DATADIR			:= ~/data/
 IMAGES			:= nginx:42 wordpress:42 mariadb:42
 VOLUMES			:= mariadb wordpress
 
@@ -18,13 +18,12 @@ $(DATADIR) :
 	@mkdir $(DATADIR)/mariadb
 
 clean :
-	@echo Cleaning Database.
-	@chown -R $(USER) data
-	@rm -r $(DATADIR)
-	@echo Cleaning docker images.
-	@docker rmi $(IMAGES)
 	@echo Cleaning volumes.
 	@docker volume rm $(VOLUMES)
+	@echo Cleaning Database.
+	@sudo rm -r $(DATADIR)
+	@echo Cleaning docker images.
+	@docker rmi $(IMAGES)
 
 down :
 	@docker-compose -f $(COMPOSE) down
