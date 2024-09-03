@@ -8,7 +8,7 @@ VOLUMES			:= mariadb wordpress
 
 all : up
 
-up : $(DATADIR)
+up : host $(DATADIR)
 	@docker-compose -f $(COMPOSE) up -d
 
 $(DATADIR) :
@@ -24,6 +24,15 @@ clean :
 	@sudo rm -r $(DATADIR)
 	@echo Cleaning docker images.
 	@docker rmi $(IMAGES)
+
+host :
+	@if grep -q '127.0.0.1	evallee-.42.fr' '/etc/hosts';\
+	then\
+		echo "Host already configured!";\
+	else\
+		echo "Adding host!";\
+		sudo sh -c 'echo "127.0.0.1	evallee-.42.fr" >> /etc/hosts';\
+	fi
 
 down :
 	@docker-compose -f $(COMPOSE) down
