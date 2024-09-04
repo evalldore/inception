@@ -32,7 +32,7 @@ clean :
 	@echo Cleaning docker images.
 	@docker rmi $(IMAGES)
 	@echo Cleaning secrets.
-	@rm -r $(SECRETSDIR)
+	@sudo rm -r $(SECRETSDIR)
 
 host :
 	@if grep -q $(HOST) '/etc/hosts';\

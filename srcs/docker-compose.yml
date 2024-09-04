@@ -48,8 +48,6 @@ services:
       - inception
     env_file:
       - .env
-    secrets:
-      - db_password
     restart: always
   mariadb:
     container_name: mariadb
@@ -66,8 +64,8 @@ services:
 
 secrets:
   credentials:
-    file: ./secrets/credentials.txt
+    file: ../secrets/credentials.txt
   db_password:
-    file: ./secrets/db_password.txt
+    file: ../secrets/db_password.txt
   db_root_password:
-    file: ./secrets/db_root_password.txt
+    file: ../secrets/db_root_password.txt
