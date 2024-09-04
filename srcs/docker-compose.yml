@@ -21,7 +21,8 @@ volumes:
 services:
   nginx:
     container_name: nginx
-    build: ./requirements/nginx
+    build:
+      context: "./requirements/nginx"
     image: nginx:42
     depends_on:
       - wordpress
@@ -36,7 +37,8 @@ services:
     restart: always
   wordpress:
     container_name: wordpress
-    build: ./requirements/wordpress
+    build:
+      context: "./requirements/wordpress"
     image: wordpress:42
     depends_on:
       - mariadb
@@ -46,10 +48,13 @@ services:
       - inception
     env_file:
       - .env
+    secrets:
+      - db_password
     restart: always
   mariadb:
     container_name: mariadb
-    build: ./requirements/mariadb
+    build:
+      context: "./requirements/mariadb"
     image: mariadb:42
     volumes:
       - mariadb:/var/lib/mysql
@@ -58,3 +63,11 @@ services:
     env_file:
       - .env
     restart: always
+
+secrets:
+  credentials:
+    file: ./secrets/credentials.txt
+  db_password:
+    file: ./secrets/db_password.txt
+  db_root_password:
+    file: ./secrets/db_root_password.txt

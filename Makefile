@@ -3,19 +3,26 @@
 
 COMPOSE			:= ./srcs/docker-compose.yml
 DATADIR			:= ~/data/
+SECRETSDIR		:= ./secrets/
 IMAGES			:= nginx:42 wordpress:42 mariadb:42
 VOLUMES			:= mariadb wordpress
+HOST			:= '127.0.0.1	evallee-.42.fr'
+SECRETS			:= credentials.txt db_passwords.txt db_root_passwords.txt
 
 all : up
 
-up : host $(DATADIR)
+up : host $(SECRETSDIR) $(DATADIR)
 	@docker-compose -f $(COMPOSE) up -d
 
 $(DATADIR) :
 	@echo Creating Database.
 	@mkdir $(DATADIR)
-	@mkdir $(DATADIR)/wordpress
-	@mkdir $(DATADIR)/mariadb
+	@mkdir $(addprefix $(DATADIR), $(VOLUMES))
+
+$(SECRETSDIR) :
+	@echo Creating secrets.
+	@mkdir $(SECRETSDIR)
+	@touch $(addprefix $(SECRETSDIR), $(SECRETS))
 
 clean :
 	@echo Cleaning volumes.
@@ -24,14 +31,16 @@ clean :
 	@sudo rm -r $(DATADIR)
 	@echo Cleaning docker images.
 	@docker rmi $(IMAGES)
+	@echo Cleaning secrets.
+	@rm -r $(SECRETSDIR)
 
 host :
-	@if grep -q '127.0.0.1	evallee-.42.fr' '/etc/hosts';\
+	@if grep -q $(HOST) '/etc/hosts';\
 	then\
 		echo "Host already configured!";\
 	else\
 		echo "Adding host!";\
-		sudo sh -c 'echo "127.0.0.1	evallee-.42.fr" >> /etc/hosts';\
+		sudo -E sh -c 'echo $(HOST) >> /etc/hosts';\
 	fi
 
 down :
