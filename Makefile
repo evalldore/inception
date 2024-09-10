@@ -13,7 +13,7 @@ db_user db_user_password db_root_password
 all : up
 
 up : $(DATADIR)
-	@sudo docker compose -f $(COMPOSE) up -d
+	@sudo -E docker compose -f $(COMPOSE) up -d
 
 $(DATADIR) :
 	@echo Creating Database.
