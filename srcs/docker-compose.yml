@@ -32,8 +32,13 @@ services:
      - "443:443"
     networks:
       - inception
-    env_file:
-      - .env
+    environment:
+      DOMAIN_NAME: ${DOMAIN_NAME}
+      PHP_HOST: ${PHP_HOST}
+      PHP_PORT: ${PHP_PORT}
+      WP_PATH: ${WP_PATH}
+      CERTS_KEY: ${CERTS_KEY}
+      CERTS_CRT: ${CERTS_CRT}
     restart: always
   wordpress:
     container_name: wordpress
@@ -46,8 +51,23 @@ services:
       - wordpress:/var/www/wordpress
     networks:
       - inception
-    env_file:
-      - .env
+    environment:
+      DOMAIN_NAME: ${DOMAIN_NAME}
+      PHP_HOST: ${PHP_HOST}
+      PHP_PORT: ${PHP_PORT}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      WP_PATH: ${WP_PATH}
+      WP_TITLE: ${WP_TITLE}
+    secrets:
+      - wp_user
+      - wp_user_password
+      - wp_user_email
+      - wp_admin
+      - wp_admin_password
+      - wp_admin_email
+      - db_user
+      - db_user_password
+      - db_root_password
     restart: always
   mariadb:
     container_name: mariadb
@@ -57,15 +77,31 @@ services:
     volumes:
       - mariadb:/var/lib/mysql
     networks:
-      - inception
-    env_file:
-      - .env
+      - inception 
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    secrets:
+      - db_user
+      - db_user_password
+      - db_root_password
     restart: always
 
 secrets:
-  credentials:
-    file: ../secrets/credentials.txt
-  db_password:
-    file: ../secrets/db_password.txt
+  db_user:
+    file: ../secrets/db_user
+  db_user_password:
+    file: ../secrets/db_user_password
   db_root_password:
-    file: ../secrets/db_root_password.txt
+    file: ../secrets/db_root_password
+  wp_user:
+    file: ../secrets/wp_user
+  wp_user_password:
+    file: ../secrets/wp_user_password
+  wp_user_email:
+    file: ../secrets/wp_user_email
+  wp_admin:
+    file: ../secrets/wp_admin
+  wp_admin_password:
+    file: ../secrets/wp_admin_password
+  wp_admin_email:
+    file: ../secrets/wp_admin_email

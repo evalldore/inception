@@ -7,32 +7,31 @@ SECRETSDIR		:= ./secrets/
 IMAGES			:= nginx:42 wordpress:42 mariadb:42
 VOLUMES			:= mariadb wordpress
 HOST			:= '127.0.0.1	evallee-.42.fr'
-SECRETS			:= credentials.txt db_passwords.txt db_root_passwords.txt
+SECRETS			:= wp_user wp_user_password wp_user_email wp_admin wp_admin_password wp_admin_email \
+db_user db_user_password db_root_password
 
 all : up
 
-up : host $(SECRETSDIR) $(DATADIR)
-	@docker-compose -f $(COMPOSE) up -d
+up : $(DATADIR)
+	@docker compose -f $(COMPOSE) up -d
 
 $(DATADIR) :
 	@echo Creating Database.
 	@mkdir $(DATADIR)
 	@mkdir $(addprefix $(DATADIR), $(VOLUMES))
 
-$(SECRETSDIR) :
+secrets :
 	@echo Creating secrets.
 	@mkdir $(SECRETSDIR)
 	@touch $(addprefix $(SECRETSDIR), $(SECRETS))
 
 clean :
 	@echo Cleaning volumes.
-	@docker volume rm $(VOLUMES)
+	@sudo docker volume rm $(VOLUMES)
 	@echo Cleaning Database.
 	@sudo rm -r $(DATADIR)
 	@echo Cleaning docker images.
-	@docker rmi $(IMAGES)
-	@echo Cleaning secrets.
-	@sudo rm -r $(SECRETSDIR)
+	@sudo docker rmi $(IMAGES)
 
 host :
 	@if grep -q $(HOST) '/etc/hosts';\
@@ -44,19 +43,19 @@ host :
 	fi
 
 down :
-	@docker-compose -f $(COMPOSE) down
+	@docker compose -f $(COMPOSE) down
 
 stop :
-	@docker-compose -f $(COMPOSE) stop
+	@docker compose -f $(COMPOSE) stop
 
 start :
-	@docker-compose -f $(COMPOSE) start
+	@docker compose -f $(COMPOSE) start
 
 logs :
-	@docker-compose -f $(COMPOSE) logs --tail 5
+	@docker compose -f $(COMPOSE) logs --tail 5
 
 validate :
-	@docker-compose -f $(COMPOSE) config
+	@docker compose -f $(COMPOSE) config
 
 status :
 	@docker ps

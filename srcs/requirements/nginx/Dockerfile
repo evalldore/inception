@@ -12,4 +12,4 @@ COPY conf/default /etc/nginx/sites-available/
 
 RUN chmod +x script.sh
 
-CMD [ "/script.sh" ]
+ENTRYPOINT [ "/script.sh" ]
