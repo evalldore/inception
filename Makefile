@@ -13,7 +13,7 @@ db_user db_user_password db_root_password
 all : up
 
 up : $(DATADIR)
-	@docker compose -f $(COMPOSE) up -d
+	@sudo docker compose -f $(COMPOSE) up -d
 
 $(DATADIR) :
 	@echo Creating Database.
@@ -43,19 +43,19 @@ host :
 	fi
 
 down :
-	@docker compose -f $(COMPOSE) down
+	@sudo docker compose -f $(COMPOSE) down
 
 stop :
-	@docker compose -f $(COMPOSE) stop
+	@sudo docker compose -f $(COMPOSE) stop
 
 start :
-	@docker compose -f $(COMPOSE) start
+	@sudo docker compose -f $(COMPOSE) start
 
 logs :
-	@docker compose -f $(COMPOSE) logs --tail 5
+	@sudo docker compose -f $(COMPOSE) logs --tail 5
 
 validate :
-	@docker compose -f $(COMPOSE) config
+	@sudo docker compose -f $(COMPOSE) config
 
 status :
-	@docker ps
+	@sudo docker ps
